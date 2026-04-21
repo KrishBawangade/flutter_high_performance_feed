@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_high_performance_feed/core/env/env.dart';
+import 'package:flutter_high_performance_feed/core/router/app_router.dart';
+import 'package:flutter_high_performance_feed/core/theme/app_theme.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async{
@@ -18,12 +20,10 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
+    return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.lightTheme,
+      routerConfig: AppRouter.appRouter
     );
   }
 }
