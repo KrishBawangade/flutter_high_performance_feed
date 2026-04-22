@@ -10,17 +10,17 @@ final supabaseClient = Provider<SupabaseClient>((ref) {
     return Supabase.instance.client;
   });
 
-  final datasource = Provider<FeedRemoteDatasource>((ref) {
+  final feedRemoteDatasourceProvider = Provider<FeedRemoteDatasource>((ref) {
     return FeedRemoteDatasource(ref.read(supabaseClient));
   });
 
   
-  final repository = Provider<FeedRepository>((ref) {
-    return FeedRepository(ref.read(datasource));
+  final feedRepositoryProvider = Provider<FeedRepository>((ref) {
+    return FeedRepository(ref.read(feedRemoteDatasourceProvider));
   });
 
   
-  final notifier =
+  final feedNotifierProvider =
       StateNotifierProvider<FeedNotifier, FeedState>((ref) {
-    return FeedNotifier(ref.read(repository));
+    return FeedNotifier(ref.read(feedRepositoryProvider));
   });

@@ -8,7 +8,7 @@ class FeedState {
 
   const FeedState({
     this.posts = const [],
-    this.isLoading = false,
+    this.isLoading = true,
     this.isLoadingMore = false,
     this.error,
   });
