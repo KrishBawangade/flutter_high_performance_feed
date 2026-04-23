@@ -26,8 +26,8 @@ class FeedItemCard extends StatelessWidget {
 
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withAlpha(80), 
-              blurRadius: 40, 
+              color: Colors.black.withAlpha(80),
+              blurRadius: 40,
               spreadRadius: 1,
               offset: const Offset(0, 20),
             ),
@@ -41,7 +41,10 @@ class FeedItemCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppDimens.radiusLg),
           child: Column(
             children: [
-              _PostImage(post: post),
+              Hero(
+                tag: "feed-image-${post.id}",
+                child: _PostImage(post: post),
+              ),
               Padding(
                 padding: const EdgeInsets.all(AppDimens.md),
                 child: Row(

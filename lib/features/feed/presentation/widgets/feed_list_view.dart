@@ -5,6 +5,7 @@ import 'package:flutter_high_performance_feed/features/feed/presentation/provide
 import 'package:flutter_high_performance_feed/features/feed/presentation/widgets/feed_item_card.dart';
 import 'package:flutter_high_performance_feed/features/feed/presentation/widgets/feed_item_shimmer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class FeedListView extends ConsumerStatefulWidget {
   final List<PostModel> posts;
@@ -83,7 +84,16 @@ class _FeedListViewState extends ConsumerState<FeedListView> {
           }
 
           final post = widget.posts[index];
-          return FeedItemCard(post: post);
+          return InkWell(
+            onTap: () async{
+              // await precacheImage(NetworkImage(post.mediaThumbUrl), context);
+
+              if(context.mounted){
+                context.push('/post/${post.id}');
+              }
+
+            },
+            child: FeedItemCard(post: post));
         },
       );
     }
