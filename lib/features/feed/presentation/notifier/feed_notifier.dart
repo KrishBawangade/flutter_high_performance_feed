@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/repository/feed_repository.dart';
 import 'feed_state.dart';
@@ -10,6 +11,9 @@ class FeedNotifier extends StateNotifier<FeedState> {
   int _page = 0;
   bool _hasMoreData = true;
 
+  final Map<String, int> _tapCounts = {};
+  final Map<String, Timer> _debounceTimers = {};
+
   FeedNotifier(this.repository) : super(const FeedState());
 
   // Initial Load
@@ -19,22 +23,13 @@ class FeedNotifier extends StateNotifier<FeedState> {
     try {
       _page = 0;
 
-      final posts = await repository.fetchPosts(
-        from: 0,
-        to: pageSize - 1,
-      );
+      final posts = await repository.fetchPosts(from: 0, to: pageSize - 1);
 
       _hasMoreData = posts.length == pageSize;
 
-      state = state.copyWith(
-        posts: posts,
-        isLoading: false,
-      );
+      state = state.copyWith(posts: posts, isLoading: false);
     } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        error: e.toString(),
-      );
+      state = state.copyWith(isLoading: false, error: e.toString());
     }
   }
 
@@ -66,5 +61,79 @@ class FeedNotifier extends StateNotifier<FeedState> {
   // Pull to Refresh
   Future<void> refresh() async {
     await fetchInitial();
+  }
+
+  void toggleLike({required String postId}) {
+    final index = state.posts.indexWhere((post) => post.id == postId);
+
+    if (index == -1) return;
+
+    final post = state.posts[index];
+
+    final newIsLiked = !post.isLiked;
+    final newLikeCount = newIsLiked
+        ? (post.likeCount + 1)
+        : (post.likeCount - 1);
+
+    final updatedPosts = [...state.posts];
+
+    updatedPosts[index] = post.copyWith(
+      isLiked: newIsLiked,
+      likeCount: newLikeCount,
+    );
+
+    state = state.copyWith(posts: updatedPosts);
+
+    _tapCounts[postId] = (_tapCounts[postId] ?? 0) + 1;
+    _debounceLike(postId);
+  }
+
+  // function to debounce the like for 500 ms to protect it from spamming
+  void _debounceLike(String postId) {
+    _debounceTimers[postId]?.cancel();
+
+    _debounceTimers[postId] = Timer(
+      Duration(milliseconds: 500),
+      () => _syncLike(postId),
+    );
+  }
+
+  // parity logic used at end of the debounce timer to emit the correct state
+  Future<void> _syncLike(postId) async {
+    final tapCount = _tapCounts[postId] ?? 0;
+
+    try {
+      // if the tap count is odd then toggle like or else there is no need to toggle 
+      if (tapCount % 2 == 1) {
+        await repository.toggleLike(postId: postId);
+      }
+
+      _tapCounts.remove(postId);
+    } catch (e) {
+      _revertLike(postId);
+      _tapCounts.remove(postId);
+    }
+  }
+
+  void _revertLike(String postId) {
+    final index = state.posts.indexWhere((post) => post.id == postId);
+
+    if (index == -1) return;
+
+    final post = state.posts[index];
+
+    final reverted = post.copyWith(
+      likeCount: post.isLiked ? post.likeCount - 1 : post.likeCount + 1,
+      isLiked: !post.isLiked,
+    );
+
+    final updatedPosts = [...state.posts];
+    updatedPosts[index] = reverted;
+
+    state = state.copyWith(posts: updatedPosts, error: "Some Error Occurred!");
+  }
+
+  void clearError() {
+    state = state.copyWith(error: null);
   }
 }

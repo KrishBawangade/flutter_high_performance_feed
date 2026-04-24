@@ -12,7 +12,6 @@ class TieredImage extends StatefulWidget {
 }
 
 class _TieredImageState extends State<TieredImage> {
-  double _opacity = 0;
 
   bool _isLoaded = false;
   ImageStream? _imageStream;
@@ -25,6 +24,7 @@ class _TieredImageState extends State<TieredImage> {
     _loadImage();
   }
 
+  // function to load image in background
   void _loadImage() {
     final imageProvider = NetworkImage(widget.post.mediaMobileUrl);
 
@@ -67,6 +67,7 @@ class _TieredImageState extends State<TieredImage> {
           fit: BoxFit.cover,
         ),
 
+        // show the image when loaded successfully
         AnimatedOpacity(
           opacity: _isLoaded ? 1 : 0,
           duration: const Duration(milliseconds: 400),

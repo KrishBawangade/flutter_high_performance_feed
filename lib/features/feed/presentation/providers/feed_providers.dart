@@ -16,7 +16,7 @@ final supabaseClient = Provider<SupabaseClient>((ref) {
 
   
   final feedRepositoryProvider = Provider<FeedRepository>((ref) {
-    return FeedRepository(ref.read(feedRemoteDatasourceProvider));
+    return FeedRepository(ref.read(feedRemoteDatasourceProvider), "user_123");
   });
 
   

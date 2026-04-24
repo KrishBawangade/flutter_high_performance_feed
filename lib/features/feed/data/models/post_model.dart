@@ -21,6 +21,9 @@ class PostModel {
   @JsonKey(name: 'like_count')
   final int likeCount;
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final bool isLiked;
+
   PostModel({
     required this.id,
     required this.createdAt,
@@ -28,10 +31,28 @@ class PostModel {
     required this.mediaMobileUrl,
     required this.mediaRawUrl,
     required this.likeCount,
+    this.isLiked = false
   });
 
   factory PostModel.fromJson(Map<String, dynamic> json) =>
       _$PostModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$PostModelToJson(this);
+
+  PostModel copyWith({
+    int? likeCount,
+    bool? isLiked,
+  }) {
+    return PostModel(
+      id: id,
+      createdAt: createdAt,
+      mediaThumbUrl: mediaThumbUrl,
+      mediaMobileUrl: mediaMobileUrl,
+      mediaRawUrl: mediaRawUrl,
+      likeCount: likeCount ?? this.likeCount,
+      isLiked: isLiked ?? this.isLiked,
+    );
+  }
+
+  
 }

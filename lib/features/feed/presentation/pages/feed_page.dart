@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_high_performance_feed/core/utils/snackbar_utils.dart';
 import 'package:flutter_high_performance_feed/features/feed/presentation/providers/feed_providers.dart';
 import 'package:flutter_high_performance_feed/features/feed/presentation/widgets/feed_list_view.dart';
 import 'package:flutter_high_performance_feed/shared/widgets/custom_app_bar.dart';
@@ -9,6 +10,18 @@ class FeedPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    
+    ref.listen(feedNotifierProvider.select((state) => state.error), (
+      previous,
+      next,
+    ) {
+      if (next != null) {
+        SnackBarUtils.showError(context, next);
+
+        ref.read(feedNotifierProvider.notifier).clearError();
+      }
+    });
+
     final posts = ref.watch(
       feedNotifierProvider.select((state) => state.posts),
     );

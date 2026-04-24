@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_high_performance_feed/core/constants/app_dimens.dart';
+import 'package:flutter_high_performance_feed/features/feed/presentation/widgets/like_button.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/models/post_model.dart';
 
-class FeedItemCard extends StatelessWidget {
+class FeedItemCard extends ConsumerWidget {
   final PostModel post;
 
   const FeedItemCard({super.key, required this.post});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
 
     return RepaintBoundary(
@@ -49,10 +51,7 @@ class FeedItemCard extends StatelessWidget {
                 padding: const EdgeInsets.all(AppDimens.md),
                 child: Row(
                   children: [
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.favorite_border_outlined),
-                    ),
+                    LikeButton(postId: post.id),
                     const SizedBox(width: AppDimens.sm),
                     Text("${post.likeCount}"),
                   ],

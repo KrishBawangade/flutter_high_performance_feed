@@ -1,9 +1,11 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_high_performance_feed/core/constants/app_dimens.dart';
+import 'package:flutter_high_performance_feed/core/utils/snackbar_utils.dart';
 import 'package:flutter_high_performance_feed/features/feed/data/models/post_model.dart';
 import 'package:flutter_high_performance_feed/features/feed/presentation/providers/feed_providers.dart';
 import 'package:flutter_high_performance_feed/features/feed/presentation/widgets/download_button.dart';
+import 'package:flutter_high_performance_feed/features/feed/presentation/widgets/like_button.dart';
 import 'package:flutter_high_performance_feed/features/feed/presentation/widgets/tiered_image.dart';
 import 'package:flutter_high_performance_feed/shared/widgets/custom_app_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,6 +17,18 @@ class FeedDetailPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+
+    ref.listen(feedNotifierProvider.select((state) => state.error), (
+      previous,
+      next,
+    ) {
+      if (next != null) {
+        SnackBarUtils.showError(context, next);
+
+        ref.read(feedNotifierProvider.notifier).clearError();
+      }
+    });
+
     final posts = ref.watch(
       feedNotifierProvider.select((state) => state.posts),
     );
@@ -63,10 +77,7 @@ class _FeedDetailView extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            IconButton(
-                              onPressed: () {},
-                              icon: const Icon(Icons.favorite_border_outlined),
-                            ),
+                            LikeButton(postId: post.id,),
                             const SizedBox(width: AppDimens.sm),
                             Text("${post.likeCount}"),
                           ],
