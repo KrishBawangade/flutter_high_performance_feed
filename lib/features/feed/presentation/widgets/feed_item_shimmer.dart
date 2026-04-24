@@ -18,7 +18,7 @@ class FeedItemShimmer extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppDimens.radiusLg),
 
         child: Shimmer.fromColors(
-          baseColor: Colors.grey.shade500.withAlpha(200),
+          baseColor: Colors.grey.shade600,
           highlightColor: Colors.grey.shade100,
           child: Container(
             decoration: BoxDecoration(

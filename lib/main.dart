@@ -12,7 +12,7 @@ void main() async{
     url: Env.supabaseUrl,
     anonKey: Env.supabaseAnonKey,
   );
-  
+
   runApp(ProviderScope(child: const MainApp()));
 }
 

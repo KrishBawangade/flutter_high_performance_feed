@@ -12,8 +12,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class FeedDetailPage extends ConsumerWidget {
   final String postId;
+  final ImageProvider imageProvider;
 
-  const FeedDetailPage({super.key, required this.postId});
+  const FeedDetailPage({super.key, required this.postId, required this.imageProvider});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -41,14 +42,15 @@ class FeedDetailPage extends ConsumerWidget {
       return Scaffold(body: Center(child: Text("Post Not Found!")));
     }
 
-    return _FeedDetailView(post: post);
+    return _FeedDetailView(post: post, imageProvider: imageProvider);
   }
 }
 
 class _FeedDetailView extends StatelessWidget {
   final PostModel post;
+  final ImageProvider imageProvider;
 
-  const _FeedDetailView({required this.post});
+  const _FeedDetailView({required this.post, required this.imageProvider});
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +63,7 @@ class _FeedDetailView extends StatelessWidget {
             aspectRatio: 1,
             child: Hero(
               tag: "feed-image-${post.id}",
-              child: TieredImage(post: post),
+              child: TieredImage(post: post, imageProvider: imageProvider),
             ),
           ),
 

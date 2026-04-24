@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_high_performance_feed/core/router/route_names.dart';
 import 'package:flutter_high_performance_feed/core/router/route_paths.dart';
 import 'package:flutter_high_performance_feed/features/feed/presentation/pages/feed_detail_page.dart';
@@ -19,8 +20,9 @@ class AppRouter {
         name: RouteNames.postDetail,
         builder: (context, state) {
           final postId = state.pathParameters["id"]!;
-
-          return FeedDetailPage(postId: postId);
+          final extra = state.extra as Map;
+          final imageProvider = extra["imageProvider"] as ImageProvider;
+          return FeedDetailPage(postId: postId, imageProvider: imageProvider);
         },
       ),
     ],
